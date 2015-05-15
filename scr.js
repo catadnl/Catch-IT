@@ -1,8 +1,7 @@
 window.onload = first_step;
 
-var WIDTH = 500, HEIGHT = 600, pi = Math.PI, KEY_LEFT  = 100, KEY_RIGHT = 102;
-var dx = 3; dy = 3;
-var canvas, ctx, keystate, score, best, hasLost;
+var WIDTH = 500, HEIGHT = 600, KEY_LEFT  = 100, KEY_RIGHT = 102, SPEED = 4;
+var canvas, ctx, keystate, score, best, hadLost, check, dx = 1 , dy = 1, add;
 var player, ball,
 
 player = {
@@ -12,8 +11,8 @@ player = {
 	height: 20,
 	
 	update: function() {
-		if (keystate[KEY_LEFT]) this.x -= 10;
-		if (keystate[KEY_RIGHT]) this.x += 10;
+		if (keystate[KEY_LEFT]) this.x -= 15;
+		if (keystate[KEY_RIGHT]) this.x += 15;
 		this.x = Math.max(Math.min(this.x, WIDTH - this.width), 0);
 	},
 	
@@ -27,8 +26,8 @@ ball = {
 	y: null,
 	side: 20,
 	update: function(){
-
-		this.x = this.x + dx;
+		add = Math.min(Math.floor(score/3), 5);
+		this.x = this.x + dx + add*dx/Math.abs(dx);
 		if (this.x > WIDTH - this.side) {
 			this.x -= 2 * Math.abs(dx);
 			if (dx > 0) 
@@ -39,18 +38,16 @@ ball = {
 			if (dx < 0) 
 				dx = -dx;
 		}
-		this.y = this.y + dy;
-		if (this.y > HEIGHT - player.height - 10) {
+		this.y = this.y + dy + add*dy/Math.abs(dy);
+		if (this.y > HEIGHT - 2 * player.height - 10) {
 			this.y -= 2 * Math.abs(dy);
 			if (dy > 0)
 				dy = -dy;
-			if (Math.abs(this.x - player.x - 1) > player.width) {
-				hasLost = true;
-				updateHighScore();
-				score = 0;
+			if ((this.x < player.x - this.side + 1) || this.x > (player.x + player.width + this.side - 1)){
+				hadLost = true;
 			}
 			else {
-				score = score +1;
+				score = score + add + 1;
 				}
 		}
 		if (this.y <  0) {
@@ -67,7 +64,6 @@ ball = {
 
 function main(){
 	keystate={};
-	// keep track of keyboard presses
 	document.addEventListener("keydown", function(evt) {
 		keystate[evt.keyCode] = true;
 	});
@@ -78,7 +74,7 @@ function main(){
 	var loop = function(){
 		update();
 		draw();
-		if(hasLost)
+		if(hadLost)
 			game_over();
 		else
 			window.requestAnimationFrame(loop, canvas);
@@ -86,13 +82,17 @@ function main(){
 	window.requestAnimationFrame(loop, canvas);
 }
 function init() {
+	add = 0;
+	dx = SPEED * dx/Math.abs(dx);
+	dy = SPEED * dy/Math.abs(dy);
+	if(check.checked){
+		dx = 7 * dx/Math.abs(dx);
+		dy = 7 * dy/Math.abs(dy);
+	}
 	score = 0;
-	best = -1;
-	hasLost = false;
+	hadLost = false;
 	player.y = HEIGHT - player.height - 10;
 	player.x = (WIDTH - player.width)/2;	
-	ball.x = 0;
-	ball.y = 0;
 }
 
 function update(){
@@ -110,7 +110,7 @@ function draw(){
 	ctx.fillStyle = "white";
 	ball.draw();
 	ctx.fillStyle = "#0f0";
-	ctx.fillText("SCORE: " + score, 10, 32);
+	ctx.fillText("SCORE: " + score, 200, 32);
 	ctx.restore();
 }
 
@@ -123,6 +123,11 @@ function updateHighScore(){
 }
 
 function first_step(){
+	setTitle(document.getElementById("quote"));
+	showPrettyMessage();
+	check = document.getElementById("option");
+	check.checked = false;
+	best = -1;
 	init();
 	canvas = document.createElement("canvas");
 	canvas.width = WIDTH;
@@ -130,12 +135,34 @@ function first_step(){
 	ctx = canvas.getContext("2d");
 	document.body.appendChild(canvas);
 	draw();
+	ctx.fillStyle = "#FF8080";
+	ball.draw();
 }
 
 function game_over(){
+	ctx.fillStyle = "#FF8080";
+	ball.draw();
+	updateHighScore();
 	ctx.font = "48px Arial";
-	ctx.fillStyle ="#000";
-	ctx.fillText("GAME OVER",100,250);
-	updateHighScore();	
+	ctx.fillStyle ="black";
+	ctx.fillText("LOOOOOser ..",100,250);	
 }
- // rezolvat unde loeste jos
+
+function showPrettyMessage(){
+	var date = new Date();
+	var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+	var day = days[date.getDay()];
+	var exactDate = day + ", " + date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+	setTimeout(function(){ alert(exactDate + "\nWelcome to Catch - IT ! \n 'Hope you'll enjoy it !  ;) "); }, 3000);
+	clearTimeout();
+}
+
+function setTitle(title){
+	title.style.position = "absolute";
+	title.style.left = "37%";
+	title.style.top = "35%";
+	title.style.font = "60px Arial";
+	title.style.color = "black";
+	setTimeout(function(){ title.parentNode.removeChild(title); }, 10000);
+	clearTimeout();
+}

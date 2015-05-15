@@ -4,16 +4,24 @@
 	<meta charset = "UTF-8">
 	<title>Catch IT !</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<script src = "scr.js" ></script>
+	<script src = "scripts.js" ></script>
 </head>
-<body>
+<body onkeydown = "game(event)">
+	<script>
+	function game(event){
+		if(event.key.locate("Enter") < event.key.length)
+			main();
+	}
+	</script>
 	<section>
 		<input  id ="newGame" type = "button" value = "New Game" onclick = "main()">
 		<div  id ="score">High Score: 0</div>
 	</section>
-	<!-- <div id = "commands">
-	Switch to number commands <input id = "option" type = "radio" value = "" onclick = "switch()">
-	</div> -->
+	<div id = "change">
+	Switch to HARD <input id = "option" type = "checkBox" value = "hard">
+	</div>
+	<p id = "quote">CATCH - IT !</p>
+	<p id = "commands">Press: 4(numPad) -- left----------right -- 6(numPad)</p>
 </body>
 
 </html>

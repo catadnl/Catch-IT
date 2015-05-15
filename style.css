@@ -29,3 +29,19 @@ input{
 	font-size: 20px;
 	color: green;
 }
+#change{
+	font-size: 20px;
+	color: green;
+	position: absolute;
+	left: 10%;
+	top: 80%;
+}
+#quote{
+	z-index: 20;
+}
+#commands{
+	position: absolute;
+	left: 2%;
+	top: 1%;
+	color: #FF8080;
+}
