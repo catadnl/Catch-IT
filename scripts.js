@@ -77,9 +77,9 @@ function main(){
 		if(hadLost)
 			game_over();
 		else
-			window.requestAnimationFrame(loop, canvas);
+			setTimeout(loop, 1);
 	};
-	window.requestAnimationFrame(loop, canvas);
+	setTimeout(loop, 1);
 }
 function init() {
 	add = 0;
@@ -123,6 +123,8 @@ function updateHighScore(){
 }
 
 function first_step(){
+	createSquare();
+	setInterval(timeInterval, 500);
 	setTitle(document.getElementById("quote"));
 	showPrettyMessage();
 	check = document.getElementById("option");
@@ -165,4 +167,22 @@ function setTitle(title){
 	title.style.color = "black";
 	setTimeout(function(){ title.parentNode.removeChild(title); }, 10000);
 	clearTimeout();
+}
+function createSquare(){
+	var square = document.createElement("div");
+	square.id = "square";
+	square.style.position = "absolute";
+	square.style.left = "90%";
+	square.style.top = "10%";
+	square.style.width = "30px";
+	square.style.height = "30px";
+	square.style.background = "green";
+	document.body.appendChild(square);
+}
+function timeInterval(){
+	var square = document.getElementById("square");
+	if(square.style.visibility == "hidden")
+		square.style.visibility = "visible";
+	else square.style.visibility = "hidden";
+
 }
